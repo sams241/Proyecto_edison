@@ -457,7 +457,49 @@ class materia:
         self.lista_estudiantes = [] #Lista para recibir la lista de estudiantes
         self.lista_docentes = [] #Lista para recibir la lista de docentes
         self.materias_dictadas = [["matematicas",[]],["ciencias",[]],["sociales",[]]] #Lista para asignar docentes a materias, con materias predefinidas
-        self.materias_asignadas = [["matematicas",[]],["ciencias",[]],["sociales",[]]] #Lista para asignar estudiantes a materias, con materias predefinidas
+        self.materias_asignadas = [["matematicas",[],{}],["ciencias",[],{}],["sociales",[],{}]] #Lista para asignar estudiantes a materias, con materias predefinidas, tambien para asignar notas
+
+    #Registrar notas
+    def Registrar_notas(self,id_estudiante,nombre_materia,nota):
+
+                           
+        for x in self.materias_asignadas:
+
+            if x[0] == nombre_materia: #Verifica que la materia si exista
+                if not x[1]: #Verifica que haya registros de estudiantes para la materia
+                    print("\nNo hay estudiantes registrados para esta materia")
+                    return
+                estudiantes = x[1]
+                notas = x[2]
+                for i in estudiantes:
+                    if i[0] == id_estudiante:
+
+                        if id_estudiante not in notas:
+                            notas[id_estudiante] = []
+                        
+                        notas[id_estudiante].append(nota)
+                        print(f"\n nota: {nota} registrada para {i[1]} en {x[0]}")
+                        return
+                    
+                    print("\nEl estudiante no esta inscrito en la materia")
+                    return
+                
+        print("\nMateria no encontrada")
+
+    #Mostrar notas registradas
+    def mostrar_notas(self,id_estudiante,materia):
+
+        for m in self.materias_asignadas: #Verificar que la materia si exista
+            if m[0] == materia:
+                notas = m[2]
+
+                if id_estudiante in notas: #Imprime las notas del estudiante 
+                    print(f"\nNotas en materia {m[0]}:")
+                    print(notas[id_estudiante])
+                else:
+                    print("\nNo hay notas registradas para el estudiante en esta materia")
+                return
+        print("\nMateria no encontrada")
 
     #Recibir lista de estudiantes
     def recibir_estudiantes(self,lista_estudiantes):
@@ -476,7 +518,7 @@ class materia:
                 print(f"\nLa materia {nombre_materia} ya existe")
                 return
             
-        self.materias_asignadas.append([nombre_materia,[]])
+        self.materias_asignadas.append([nombre_materia,[],{}])
         print(f"\nLa materia {nombre_materia} fue agregada con exito.")
 
     #Metodo para agregar nuevas materias a docentes
@@ -501,10 +543,10 @@ class materia:
                         m[1].append(e)
                         print(f"\nEstudiante {e[1]} fue agregado a {m[0]}")
                         return
-                    print("\nEstudiante no encontrado")
-                    return
-            print("\nMateria no encontrada")
-            return
+                print("\nEstudiante no encontrado")
+                return
+        print("\nMateria no encontrada")
+        
         
     #Metodo para agregar docente a una materia
     def agregar_docente_a_materia(self,nombre_materia,id_docente):
@@ -516,10 +558,9 @@ class materia:
                         m[1].append(e)
                         print(f"\ndocente {e[1]} fue agregado a {m[0]}")
                         return
-                    print("\nDocente no encontrado")
-                    return
-            print("\nMateria no encontrada")
-            return
+                print("\nDocente no encontrado")
+                return
+        print("\nMateria no encontrada")
 
     #Metodo para mostrar las materias con sus respectivos estudiantes            
     def mostrar_materias_asiganadas_a_estudiantes(self):
@@ -703,7 +744,7 @@ while True:
             print("-"*40)
             print("Sistema de estudiantes")
             print("-"*40)
-            print("\nPresiona: \n1. Agregar estudiante\n2. Modificar estudiante\n3. Mostrar estudiantes\n4. Eliminar estudiante\n5. Ver las materias disponibles y estudiantes asignados a ellas\n6. Agregar una nueva materia\n7. Agregar estudiante a una materia\n8. Ver las actividades disponibles y estudiantes asignados\n9. Agregar nueva actividad\n10. Agregar estudiante a una actividad\n11. Salir al sistema principal")
+            print("\nPresiona: \n1. Agregar estudiante\n2. Modificar estudiante\n3. Mostrar estudiantes\n4. Eliminar estudiante\n5. Ver las materias disponibles y estudiantes asignados a ellas\n6. Agregar una nueva materia\n7. Agregar estudiante a una materia\n8. Ver las actividades disponibles y estudiantes asignados\n9. Agregar nueva actividad\n10. Agregar estudiante a una actividad\n11. Registrar nota\n12. Mostrar notas\n13. Salir al sistema principal")
             opcion = input("\nIngresa una opcion: ")
 
             #verifica que la variable no este vacia
@@ -722,7 +763,7 @@ while True:
                 continue
 
             #Verifica que la variable este dentro del rango de posibles opciones
-            if opcion < 1 or opcion > 11:
+            if opcion < 1 or opcion > 13:
                 print("")
                 print("-"*40)
                 print("Opción no disponible. Intente nuevamente.")
@@ -812,8 +853,56 @@ while True:
                     actividad1.recibir_estdiantes(Estudiante1.obtener_lista_estudiantes()) #Obtener lista de estudiantes y pasarla como parametro
                     actividad1.agregar_estudiante_a_actividad(nombree_actividad,id_estudiante)
 
-            #Volver al menu principal
             elif opcion == 11:
+
+                if not Estudiante1.obtener_lista_estudiantes():
+
+                    print("\nNo hay estudiantes registrados")
+
+                else:
+
+                    id_estudiante = input("\nIngrese el id del estudiante que desea registrar nota: ")
+                    while not id_estudiante:
+                        id_estudiante = input("\nDebe agregar el id del estudiante: ")
+
+                    nombre_materia = input("\nIngrese el nombre de la materia a la cual desea asignar la nota: ")
+                    while not nombre_materia:
+                        nombre_materia = input("\nDebe ingresar el nombre de la materia: ")
+
+                    nota = input("\nIngrese la nota: ")
+                    while not nota:
+                        nota = input("\nDebe ingresar la nota: ")
+
+                    try:
+                        nota = int(nota)
+
+                    except ValueError:
+
+                        print("\nTipo de dato invalido, debe ingresar un numero")
+                        continue
+
+                    materia1.Registrar_notas(id_estudiante,nombre_materia,nota)
+
+            elif opcion == 12:  
+
+                if not Estudiante1.obtener_lista_estudiantes():
+
+                    print("\nNo hay estudiantes registrados")
+
+                else:
+
+                    id_estudiante = input("\nIngrese el id del estudiante que desea ver las notas: ")
+                    while not id_estudiante:
+                        id_estudiante = input("\nDebe agregar el id del estudiante: ")
+
+                    nombre_materia = input("\nIngrese el nombre de la materia a la cual desea ver las notas: ")
+                    while not nombre_materia:
+                        nombre_materia = input("\nDebe ingresar el nombre de la materia: ")
+
+                    materia1.mostrar_notas(id_estudiante,nombre_materia)
+
+            #Volver al menu principal
+            elif opcion == 13:
                 print("\nSaliendo del area de estudiantes....")
                 break
             
