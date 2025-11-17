@@ -1,0 +1,1 @@
+#Permite que la carpeta "modelos" se comporte como un conjunto de paquetes que puede usar el main"
